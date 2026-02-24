@@ -152,8 +152,8 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-col items-center sm:items-end space-y-1">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Handcrafted by</p>
-            <p className="text-xs font-bold text-slate-900">Youssef Emad Kamel</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300"></p>
+            <p className="text-xs font-bold text-slate-900"></p>
           </div>
         </div>
       </footer>

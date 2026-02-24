@@ -1,0 +1,157 @@
+"use client";
+
+import { useState } from "react";
+
+export default function Home() {
+  const [prompt, setPrompt] = useState("");
+  const [image, setImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const generate = async () => {
+    if (!prompt) return;
+
+    setLoading(true);
+    setImage(null);
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Something went wrong");
+        setLoading(false);
+        return;
+      }
+
+      const blob = await res.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      setImage(imageUrl);
+    } catch (error) {
+      console.error("Generation error:", error);
+      alert("Failed to connect to the server.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <nav className="p-6 border-b border-slate-200/50 bg-white/70 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-brand/40">L</div>
+            <span className="text-2xl font-black tracking-tight premium-text-gradient uppercase">Lucid</span>
+          </div>
+          <div className="text-xs font-medium text-slate-400 uppercase tracking-widest hidden sm:block">
+            Powered by FLUX.1
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="flex-grow flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-2xl space-y-10">
+          <header className="text-center space-y-4">
+            <h1 className="text-5xl sm:text-7xl font-black tracking-tighter premium-text-gradient leading-tight">
+              Visualize your <br /> imagination.
+            </h1>
+            <p className="text-slate-500 text-lg max-w-md mx-auto leading-relaxed">
+              Create stunning, high-definition images in seconds using the most advanced AI models.
+            </p>
+          </header>
+
+          <div className="glass-card p-2 sm:p-4 space-y-4 shadow-brand/5 border-slate-200/50">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                className="glass-input flex-grow"
+                placeholder="Describe what you want to see..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && generate()}
+              />
+              <button
+                onClick={generate}
+                disabled={loading || !prompt}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed sm:w-40"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Working...
+                  </>
+                ) : (
+                  "Generate"
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Results Area */}
+          <div className="relative min-h-[400px] flex items-center justify-center">
+            {loading && (
+              <div className="text-center space-y-4 animate-pulse">
+                <div className="w-16 h-16 bg-brand/10 rounded-full mx-auto flex items-center justify-center">
+                  <div className="w-8 h-8 bg-brand/20 rounded-full animate-ping" />
+                </div>
+                <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">Envisioning...</p>
+              </div>
+            )}
+
+            {image && !loading && (
+              <div className="float-animation w-full transition-all duration-700">
+                <div className="glass-card overflow-hidden group border-slate-200/50">
+                  <img
+                    src={image}
+                    alt="AI Generated Visualization"
+                    className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
+                    <button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = image;
+                        link.download = `lucid-${Date.now()}.png`;
+                        link.click();
+                      }}
+                      className="w-full py-2 bg-slate-900/10 backdrop-blur-md rounded-lg text-sm font-medium text-slate-900 hover:bg-slate-900/20 transition-colors border border-slate-900/10"
+                    >
+                      Download Image
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!image && !loading && (
+              <div className="text-center py-20 opacity-40 border-2 border-dashed border-slate-200 rounded-3xl w-full">
+                <p className="text-slate-400">Your masterpiece will appear here</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="py-10 px-6 border-t border-slate-100 bg-white/50">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col items-center sm:items-start space-y-2">
+            <div className="flex items-center gap-2 opacity-50">
+              <div className="w-5 h-5 bg-slate-800 rounded-sm flex items-center justify-center font-bold text-white text-[10px]">L</div>
+              <span className="text-sm font-bold tracking-widest uppercase text-slate-900">Lucid</span>
+            </div>
+            <p className="text-xs text-slate-400 font-medium">
+              &copy; 2026 Youssef Emad Kamel. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

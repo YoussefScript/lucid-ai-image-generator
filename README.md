@@ -2,8 +2,6 @@
 
 Lucid is a premium, high-speed AI image generation platform developed by **Youssef Emad Kamel**. It leverages the cutting-edge **FLUX.1-schnell** model via the Hugging Face Router to transform textual imaginations into stunning visual masterpieces.
 
-![Lucid Interface Mockup](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200)
-
 ## ✨ Features
 
 - **FLUX.1-schnell Engine**: Ultra-fast generation with state-of-the-art detail and composition.

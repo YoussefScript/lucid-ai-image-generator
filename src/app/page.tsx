@@ -148,7 +148,7 @@ export default function Home() {
               <span className="text-sm font-black tracking-widest uppercase text-slate-900">Lucid</span>
             </div>
             <p className="text-xs text-slate-400 font-medium">
-              &copy; 2026 Youssef Emad Kamel. All rights reserved.
+              &copy; 2026 Emad Kamel Ayad. All rights reserved.
             </p>
           </div>
           <div className="flex flex-col items-center sm:items-end space-y-1">
